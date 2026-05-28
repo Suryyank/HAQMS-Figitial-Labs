@@ -1,19 +1,20 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
 
 // Load environment variables
 dotenv.config();
 
-const authRoutes = require('./routes/auth');
-const patientRoutes = require('./routes/patients');
-const doctorRoutes = require('./routes/doctors');
-const appointmentRoutes = require('./routes/appointments');
-const queueRoutes = require('./routes/queue');
-const reportRoutes = require('./routes/reports');
+const authRoutes = require("./routes/auth");
+const patientRoutes = require("./routes/patients");
+const doctorRoutes = require("./routes/doctors");
+const appointmentRoutes = require("./routes/appointments");
+const queueRoutes = require("./routes/queue");
+const reportRoutes = require("./routes/reports");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Enable CORS for all origins (weak/broad CORS config)
 app.use(cors());
@@ -28,19 +29,20 @@ app.use((req, res, next) => {
 });
 
 // Register routes
-app.use('/api/auth', authRoutes);
-app.use('/api/patients', patientRoutes);
-app.use('/api/doctors', doctorRoutes);
-app.use('/api/appointments', appointmentRoutes);
-app.use('/api/queue', queueRoutes);
-app.use('/api/reports', reportRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/patients", patientRoutes);
+app.use("/api/doctors", doctorRoutes);
+app.use("/api/appointments", appointmentRoutes);
+app.use("/api/queue", queueRoutes);
+app.use("/api/reports", reportRoutes);
 
 // Root route
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   res.json({
-    message: 'Hospital Appointment and Queue Management System (HAQMS) Backend API',
-    status: 'Running',
-    version: '1.0.0-deliberate-bugs'
+    message:
+      "Hospital Appointment and Queue Management System (HAQMS) Backend API",
+    status: "Running",
+    version: "1.0.0-deliberate-bugs",
   });
 });
 
@@ -48,11 +50,11 @@ app.get('/', (req, res) => {
 // BUG: Improper error handling. It returns the raw error stack trace to the client,
 // which leaks details about database types, schema layout, and file paths.
 app.use((err, req, res, next) => {
-  console.error('[CRITICAL-ERROR]:', err);
+  console.error("[CRITICAL-ERROR]:", err);
   res.status(500).json({
-    message: 'An unexpected internal server error occurred!',
+    message: "An unexpected internal server error occurred!",
     error: err.message,
-    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
   });
 });
 
@@ -65,7 +67,7 @@ app.listen(PORT, () => {
 });
 
 // Catch unhandled rejections
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+process.on("unhandledRejection", (reason, promise) => {
+  console.error("Unhandled Rejection at:", promise, "reason:", reason);
   // Intentionally do not exit process so candidates see unhandled promise logs
 });
