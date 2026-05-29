@@ -1,0 +1,102 @@
+import React from "react";
+import { useQueue } from "../hooks/useQueue";
+
+const QueueTokens = () => {
+  const { loading, groupedTokens } = useQueue();
+  return (
+    <>
+      {loading && Object.keys(groupedTokens).length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <div className="pulse-loader">
+            <div></div>
+            <div></div>
+          </div>
+          <p className="mt-4 text-sm font-semibold text-slate-400">
+            Loading active token queues...
+          </p>
+        </div>
+      ) : Object.keys(groupedTokens).length === 0 ? (
+        <div className="glass p-12 text-center rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+          <Bell className="h-12 w-12 text-slate-400 mx-auto animate-bounce" />
+          <h3 className="mt-4 text-lg font-bold text-slate-800 dark:text-slate-100">
+            No Active Tokens
+          </h3>
+          <p className="mt-2 text-slate-500 dark:text-slate-400 text-sm max-w-md mx-auto">
+            There are currently no patient check-ins registered for today. Use
+            the receptionist portal in the Staff Dashboard to check-in patients.
+          </p>
+        </div>
+      ) : (
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {Object.entries(groupedTokens).map(([docId, docInfo]) => (
+            <div
+              key={docId}
+              className="glass rounded-2xl shadow-lg border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col h-full hover:shadow-teal-500/5 hover:border-teal-500/30 transition-all duration-300"
+            >
+              <div className="bg-slate-500/5 p-5 border-b border-slate-200 dark:border-slate-800">
+                <h3 className="font-extrabold text-lg text-slate-800 dark:text-slate-100">
+                  {docInfo.doctorName}
+                </h3>
+                <p className="text-xs text-teal-600 dark:text-teal-400 font-bold uppercase tracking-wider mt-0.5">
+                  {docInfo.specialization}
+                </p>
+              </div>
+
+              <div className="p-6 flex-1 flex flex-col justify-between">
+                <div className="mb-6">
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2.5">
+                    Now Calling
+                  </h4>
+                  {docInfo.calling ? (
+                    <div className="bg-teal-500/10 dark:bg-teal-500/5 border border-teal-500/30 p-6 rounded-2xl text-center shadow-inner relative overflow-hidden group">
+                      <span className="block text-5xl font-black text-teal-600 dark:text-teal-400 tracking-wider animate-pulse">
+                        #{docInfo.calling.tokenNumber}
+                      </span>
+                      <span className="block text-xs font-bold text-slate-400 uppercase tracking-wide mt-2">
+                        Patient: {docInfo.calling.patient.name}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800/80 p-6 rounded-2xl text-center shadow-inner">
+                      <span className="block text-2xl font-extrabold text-slate-400 dark:text-slate-500 tracking-wider italic">
+                        Idle
+                      </span>
+                      <span className="block text-xs font-medium text-slate-400 mt-2">
+                        No active patients being called
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">
+                    Queue List
+                  </h4>
+                  {docInfo.waiting.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {docInfo.waiting.map((token) => (
+                        <div
+                          key={token.id}
+                          className="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300"
+                          title={`Patient: ${token.patient.name}`}
+                        >
+                          #{token.tokenNumber}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="text-xs text-slate-400 dark:text-slate-500 italic block">
+                      No upcoming patients in queue
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </>
+  );
+};
+
+export default QueueTokens;

@@ -148,27 +148,20 @@ import {
   useState,
   useCallback,
 } from "react";
-
 import { useRouter } from "next/navigation";
-
 import {
   loginService,
   registerService,
 } from "@/features/auth/services/auth.services";
-
 import { authStorage } from "@/features/auth/utils/auth-storage";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const router = useRouter();
-
   const [user, setUser] = useState(null);
-
   const [token, setToken] = useState(null);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState(null);
 
   // =====================================
@@ -178,7 +171,6 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     try {
       const storedToken = authStorage.getToken();
-
       const storedUser = authStorage.getUser();
 
       if (storedToken && storedUser) {
